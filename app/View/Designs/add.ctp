@@ -6,6 +6,7 @@
         <?php
          echo $this->Form->input('title');
         echo $this->Form->input('body');
+        echo $this->Form->hidden('public', array('value' => 0));
     ?>
     </fieldset>
 <?php echo $this->Form->end(__('Submit')); ?>
