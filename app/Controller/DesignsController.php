@@ -3,8 +3,10 @@ class DesignsController extends AppController {
     public $scaffold; 
     public $helpers = array('Html', 'Form');
     public function index() {
-        $this->set('newdesigns', $this->Design->find('all', array('order' => 'created')));
-        $this->set('populardesigns', $this->Design->find('all', array('order' => 'liked DESC')));
+        $this->set('newdesigns', $this->Design->find('all', array('order' => 'created', 
+                                                                  'conditions' => array('public' => '1'))));
+        $this->set('populardesigns', $this->Design->find('all', array('order' => 'liked DESC',
+                                                                      'conditions' => array('public' => '1'))));
     }
     public function index_latest() {
         $this->set('designs', $this->Design->find('all'));
@@ -24,6 +26,7 @@ class DesignsController extends AppController {
         if (!$design) {
             throw new NotFoundException(__('Invalid post'));
         }
+//TODO: test if public OR user_id==logged in user
         $this->set('design', $design['0']);
         $this->set('user', ($this->Auth->user('id')));
     }
