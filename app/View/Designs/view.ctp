@@ -25,8 +25,8 @@ array('controller' => 'designs', 'action' => 'index'));
     <?php
     $this->data = $design['Design']; // make the form an edit-form
     echo $this->Form->create('Design', array('url' => array('controller' => 'Designs', 'action' => 'edit', $design['Design']['id'])));
-//    echo $this->Form->hidden('id', array('value' => $design['Design']['id']));
     echo $this->Form->hidden('public', array('value' => 1));
+    echo $this->Form->hidden('id', array('value' =>  $design['Design']['id']));
     echo $this->Form->end(__('Publish'));
  }
 ?><br/>
@@ -61,7 +61,13 @@ print_r($design);
              $first=false;
              ?>
             <a href="<?php echo $image['image_url']; ?>" target="_blank" rel="lightbox[designimg]" ><img src="<?php echo $image['image_url']; ?>" border="0" width="256" hspace="5" vspace="5"></a>
-  
+             <?php // allow the owner to delete an image
+              if ($user == h($design['Design']['user_id']))  {
+                  echo $this->Form->create('Images', array('url' => array('controller' => 'Images', 'action' => 'delete', $image['id'])));
+                  echo $this->Form->end(__('X'));
+              }
+            ?>
+ 
             <?php foreach ($design['files'] as $file): ?>
     <?php
 //TODO: if STL
@@ -86,7 +92,14 @@ print_r($design);
              endforeach;
 
         }
-    endforeach; ?>
+    endforeach;
+
+    // allow adding images if we are the owner
+    if ($user == h($design['Design']['user_id']))  {
+        echo $this->Form->create('Images', array('url' => array('controller' => 'Images', 'action' => 'add', $design['Design']['id'])));
+        echo $this->Form->end(__('Add Image'));
+    }
+    ?>
     </td>
       <td width="524" rowspan="2"><div align="center">
         <p><strong><?php echo h($design['Design']['title']); ?></strong></p>
@@ -103,7 +116,16 @@ print_r($design);
              $first=false;
              // already shown above
         } else {
-     ?> <td width="100" height="79"><a href="<?php echo $image['image_url']; ?>" target="_blank" rel="lightbox[designimg]" ><img src="<?php echo $image['image_url']; ?>" border="0" width="128" hspace="5" vspace="5"></a></td> <?php
+     ?> <td width="100" height="79">
+                 <a href="<?php echo $image['image_url']; ?>" target="_blank" rel="lightbox[designimg]" ><img src="<?php echo $image['image_url']; ?>" border="0" width="128" hspace="5" vspace="5"></a>
+             <?php // allow the owner to delete an image
+              if ($user == h($design['Design']['user_id']))  {
+                  echo $this->Form->create('Images', array('url' => array('controller' => 'Images', 'action' => 'delete', $image['id'])));
+                  echo $this->Form->end(__('X'));
+              }
+            ?>
+
+        </td> <?php
        }
     endforeach; ?>
     </tr>
@@ -117,11 +139,27 @@ print_r($design);
 
     <?php foreach ($design['files'] as $file): ?>
         <tr>
-          <td><a href="<?php echo $file['url']; ?>"><?php echo $file['name']; ?></a></td>
+          <td><a href="<?php echo $file['url']; ?>"><?php echo $file['name']; ?></a>
+            <?php // allow the owner to delete a file
+              if ($user == h($design['Design']['user_id']))  {
+                  echo $this->Form->create('Files', array('url' => array('controller' => 'Files', 'action' => 'delete', $file['id'])));
+                  echo $this->Form->end(__('X'));
+              }
+
+            ?>
+          </td>
         </tr>
     <?php endforeach; ?>
         <tr>
-          <td height="247">&nbsp;</td>
+          <td height="247">&nbsp;
+            <?php
+              // allow adding files if we are the owner
+              if ($user == h($design['Design']['user_id']))  {
+                  echo $this->Form->create('Files', array('url' => array('controller' => 'Files', 'action' => 'add', $design['Design']['id'])));
+                  echo $this->Form->end(__('Add File'));
+              }
+            ?>
+          </td>
           </tr>
       </table></td>
     </tr>
