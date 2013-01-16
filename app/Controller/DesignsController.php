@@ -3,7 +3,17 @@ class DesignsController extends AppController {
     public $scaffold; 
     public $helpers = array('Html', 'Form');
     public function index() {
+        $this->set('newdesigns', $this->Design->find('all', array('order' => 'created')));
+        $this->set('populardesigns', $this->Design->find('all', array('order' => 'liked DESC')));
+    }
+    public function index_latest() {
         $this->set('designs', $this->Design->find('all'));
+    }
+    public function getByUser($id = null) {
+        if (!$id) {
+            throw new NotFoundException(__('Invalid post'));
+        }
+       return  $this->Design->find('threaded', array('conditions' => array('user_id' => $id)));
     }
     public function view($id = null) {
         if (!$id) {
@@ -32,6 +42,9 @@ class DesignsController extends AppController {
    public function isAuthorized($user) {
     // All registered users can add designs
     if ($this->action === 'add') {
+        return true;
+    }
+    if ($this->action === 'index_latest') {
         return true;
     }
 

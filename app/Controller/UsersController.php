@@ -1,4 +1,6 @@
 <?php
+App::import('Controller', 'Designs');
+
 // app/Controller/UsersController.php
 class UsersController extends AppController {
 
@@ -14,6 +16,9 @@ class UsersController extends AppController {
             throw new NotFoundException(__('Invalid user'));
         }
         $this->set('user', $this->User->read(null, $id));
+        $Designs = new DesignsController;
+        $Designs->constructClasses();
+        $this->set('userdesigns', $Designs->getByUser($id));
     }
 
     public function add() {

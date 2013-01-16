@@ -44,7 +44,7 @@ class AppController extends Controller {
 
     // define actions that are always allowed on all controllers
     public function beforeFilter() {
-        $this->Auth->allow('index', 'view', 'home', 'display');
+        $this->Auth->allow('index', 'index_latest', 'index_latestderived', 'index_mostfav', 'view', 'home', 'display');
     }
 
    public function isAuthorized($user) {

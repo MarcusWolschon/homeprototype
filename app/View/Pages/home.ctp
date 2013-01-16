@@ -10,7 +10,7 @@
   This will become a new website to host user -submited designs for people to print on home 3D printers. <br/>
   Please join as a contributor if you are interested to help and help us in brainstorming in the wiki! (So coding can begin ASAP.) <br/>
   <br/>
-  Status: Development is happening <a href="https://code.google.com/p/homeprototype/wiki/Home"><b><u>here</u></b></a>
+  Status: Development is happening on <a href="https://github.com/MarcusWolschon/homeprototype/wiki"><b><u>GitHUB</u></b></a>
  <body>
 </html>
 

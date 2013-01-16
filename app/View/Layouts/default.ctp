@@ -53,7 +53,9 @@ function popupWindow(url) {
 			<h1><a href="/designs">Home Prototyping</a><br/>
 <?php
   if ( AuthComponent::user('id') ) {
-    echo "Hello user #".  AuthComponent::user('id') . " " . $this->Html->link('[Logout]', array('controller' => 'users', 'action' => 'logout')) . " " .  $this->Html->link('[UPLOAD]', array('controller' => 'designs', 'action' => 'add'));
+    echo "Hello user ";
+    echo $this->Html->link("#" .  AuthComponent::user('id'), array('controller' => 'users', 'action' => 'view',  AuthComponent::user('id'))); 
+    echo " " . $this->Html->link('[Logout]', array('controller' => 'users', 'action' => 'logout')) . " " .  $this->Html->link('[UPLOAD]', array('controller' => 'designs', 'action' => 'add'));
   } else {
     echo $this->Html->link('[Login]', array('controller' => 'users', 'action' => 'login'));
   }
