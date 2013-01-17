@@ -106,6 +106,41 @@ print_r($design);
         <p><?php echo h($design['Design']['body']); ?></p>
         <p>created by: <?php echo $this->Html->link("#" .  $design['Design']['user_id'], array('controller' => 'users', 'action' => 'view',  $design['Design']['user_id'])); ?></a>
            on: <?php echo $design['Design']['created']; ?></p>
+        <p>License: 
+<?php
+          switch ($design['Design']['license']) {
+    case 0:
+        ?> <a rel="license" href="http://creativecommons.org/licenses/by/3.0/deed.de"><img alt="Creative Commons Lizenzvertrag" style="border-width:0" src="http://i.creativecommons.org/l/by/3.0/88x31.png" /></a> <?php
+        break;
+    case 1: // Share Alike - Creative Commons
+        ?><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.de"><img alt="Creative Commons Lizenzvertrag" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" /></a> <?php
+        break;
+    case 2: // No Derivatives - Creative Commons
+        ?><a rel="license" href="http://creativecommons.org/licenses/by-nd/3.0/deed.de"><img alt="Creative Commons Lizenzvertrag" style="border-width:0" src="http://i.creativecommons.org/l/by-nd/3.0/88x31.png" /></a> <?php
+        break;
+    case 3: // Non-Commercial - Creative Commons
+        ?><a rel="license" href="http://creativecommons.org/licenses/by-nc/3.0/deed.de"><img alt="Creative Commons Lizenzvertrag" style="border-width:0" src="http://i.creativecommons.org/l/by-nc/3.0/88x31.png" /></a>  <?php
+        break;
+    case 4: // Attribution - Non-Commercial - Share Alike
+        ?><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.de"><img alt="Creative Commons Lizenzvertrag" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png" /></a> <?php
+        break;
+    case 5: // Attribution - Non-Commercial - No Derivatives
+        ?><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.de"><img alt="Creative Commons Lizenzvertrag" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-nd/3.0/88x31.png" /></a>  <?php
+        break;
+    case 6: // Creative Commons - Public Domain Dedication
+        ?><a rel="license" href="http://creativecommons.org/licenses/pd/3.0/deed.de"><img alt="Creative Commons Lizenzvertrag" style="border-width:0" src="http://i.creativecommons.org/l/pd/3.0/88x31.png" /></a>  <?php
+        break;
+    case 7: // Creative Commons - GNU GPL
+        ?><a rel="license" href="http://creativecommons.org/licenses/gpl/3.0/deed.de"><img alt="Creative Commons Lizenzvertrag" style="border-width:0" src="http://i.creativecommons.org/l/gpl/3.0/88x31.png" /></a>  <?php
+        break;
+    case 8: // Creative Commons - LGPL
+        ?><a rel="license" href="http://creativecommons.org/licenses/lgpl/3.0/deed.de"><img alt="Creative Commons Lizenzvertrag" style="border-width:0" src="http://i.creativecommons.org/l/lgpl/3.0/88x31.png" /></a>  <?php
+        break;
+    defaukt:
+        echo "<b>no license specified</b>"; // should not happen
+        break;
+}
+?></p>
       </div></td>
     </tr>
     <tr>
