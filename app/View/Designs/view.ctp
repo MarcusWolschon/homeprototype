@@ -189,7 +189,7 @@ print_r($design);
           <td height="247">&nbsp;
             <?php
               // allow adding files if we are the owner
-              if ($user == h($design['Design']['user_id']))  {
+              if ($user == h($design['Design']['user_id']) && $canAddFile)  {
                   echo $this->Form->create('Files', array('url' => array('controller' => 'Files', 'action' => 'add', $design['Design']['id'])));
                   echo $this->Form->end(__('Add File'));
               }

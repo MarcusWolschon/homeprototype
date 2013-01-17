@@ -5,6 +5,17 @@ class Design extends AppModel {
    public function isOwnedBy($design, $user) {
        return $this->field('id', array('id' => $design, 'user_id' => $user)) === $design;
    }
+   public function isPublic($design) {
+       return $this->field('id', array('id' => $design, 'public' => 1)) === $design;
+   }
+
+  // Does the storage type of this design
+  // allow adding new files?
+  public function canAddFile($design) {
+      return $design['storagetype'] == 0;
+  }
+
+//----------------------------- relations: --------------------------
 
   public $hasMany = array(
         'images' => array('className' => 'Image',

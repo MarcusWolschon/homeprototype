@@ -2,21 +2,38 @@
 class DesignsController extends AppController {
     public $scaffold; 
     public $helpers = array('Html', 'Form');
+
+    // action
+    // show the 10 newest, 10 most popular (TODO: and 10 newest derived) designs
     public function index() {
-        $this->set('newdesigns', $this->Design->find('all', array('order' => 'created DESC', 
-                                                                  'conditions' => array('public' => '1'))));
-        $this->set('populardesigns', $this->Design->find('all', array('order' => 'liked DESC',
-                                                                      'conditions' => array('public' => '1'))));
+        // ---------------- newest designs 
+        $temp = $this->Design->find('all', array('order' => 'created DESC', 
+                                                 'conditions' => array('public' => '1'),
+                                                 'limit' => 10));
+        $this->set('newdesigns', $temp);
+       
+        // ---------------- most popular designs 
+        $temp = $this->Design->find('all', array('order' => 'liked DESC',
+                                                 'conditions' => array('public' => '1'),
+                                                 'limit' => 10));
+        $this->set('populardesigns', $temp);
     }
+
+    // action
+    // show all most recent designs
     public function index_latest() {
         $this->set('designs', $this->Design->find('all'));
     }
+
+    // get all designs of a user
     public function getByUser($id = null) {
         if (!$id) {
             throw new NotFoundException(__('Invalid post'));
         }
        return  $this->Design->find('threaded', array('conditions' => array('user_id' => $id)));
     }
+
+    // get all details on a single design
     public function view($id = null) {
         if (!$id) {
             throw new NotFoundException(__('Invalid post'));
@@ -29,8 +46,11 @@ class DesignsController extends AppController {
 //TODO: test if public OR user_id==logged in user
         $this->set('design', $design['0']);
         $this->set('user', ($this->Auth->user('id')));
+        $this->set('canAddFile', $this->Design->canAddFile($design['0']['Design']));
     }
 
+   // GET:  get all details of a single design for editing
+   // POST: save changes made
    public function edit($id = null) {
        if (!$id) {
             throw new NotFoundException(__('Invalid post'));
@@ -53,6 +73,8 @@ class DesignsController extends AppController {
         }
 
    }
+
+   // POST: add a new design
    public function add() {
         // store ID of current user
         if ($this->request->is('post')) {
@@ -66,6 +88,14 @@ class DesignsController extends AppController {
         }
    }
 
+    // define actions that are always allowed on all controllers
+    public function beforeFilter() {
+        // no "view"
+        $this->Auth->allow('index', 'index_latest', 'index_latestderived', 'index_mostfav', 'home', 'display');
+    }
+
+
+   // is the given user allowed to do $this->action
    public function isAuthorized($user) {
     // All registered users can add designs
     if ($this->action === 'add') {
@@ -73,6 +103,17 @@ class DesignsController extends AppController {
     }
     if ($this->action === 'index_latest') {
         return true;
+    }
+
+    if ($this->action === 'view') {
+        $postId = $this->request->params['pass'][0];
+        if ($this->Design->isPublic($postId)) {
+            return true;
+        }
+        if ($this->Design->isOwnedBy($postId, $user['id'])) {
+            return true;
+        }
+        return false;
     }
 
 //TODO: unpublished designs can only be seen by it's author
