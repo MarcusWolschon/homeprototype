@@ -17,6 +17,10 @@ class DesignsController extends AppController {
                                                  'conditions' => array('public' => '1'),
                                                  'limit' => 10));
         $this->set('populardesigns', $temp);
+
+        // ---------------- most recent child-designs
+        $temp = $this->Design->query("SELECT * FROM designs INNER JOIN designs_designs ON designs.id = child_id LEFT JOIN images ON images.design_id = designs.id GROUP BY  designs.id ORDER BY created LIMIT 10;");
+        $this->set('deriveddesigns', $temp);
     }
 
     // action
@@ -47,6 +51,14 @@ class DesignsController extends AppController {
         $this->set('design', $design['0']);
         $this->set('user', ($this->Auth->user('id')));
         $this->set('canAddFile', $this->Design->canAddFile($design['0']['Design']));
+        $this->set('children', ($this->Design->query("SELECT * FROM designs, designs_designs WHERE designs.id = child_id AND parent_id=" . $id . ";")));
+
+        if (empty($this->data)) {
+            $this->data = $this->Design->read(null, $id);
+        }
+//        $parents = $this->Design->parents->find('list',array('fields'=>array('id','title')));
+//        $this->set(compact('parents'));
+        $this->set('parents', $this->Design->find('list'));
     }
 
    // GET:  get all details of a single design for editing
@@ -56,21 +68,27 @@ class DesignsController extends AppController {
             throw new NotFoundException(__('Invalid post'));
         }
 
+        if ($this->request->is('post')) {
+      //      $this->data['Post']['user_id'] = $this->Auth->user('id'); //Added this line
+print("request:");
+print_r($this->request->data);
+            //if ($this->Design->save($this->request->data)) {
+            //$this->Design->create();
+            if ($this->Design->saveAll($this->data)) {
+                $this->Session->setFlash('Your design has been updated (uid ' .  $this->Auth->user('id') . ').');
+                $this->redirect(array('action' => 'view', $id));
+            }
+        }
+
+
         $design = $this->Design->find('threaded', array('conditions' => array('id' => $id)));
         if (!$design) {
             throw new NotFoundException(__('Invalid post'));
         }
 //TODO: test if public OR user_id==logged in user
         $this->set('design', $design['0']);
+        $this->data =  $design['0'];
         $this->set('user', ($this->Auth->user('id')));
-
-        if ($this->request->is('post')) {
-            $this->request->data['Post']['user_id'] = $this->Auth->user('id'); //Added this line
-            if ($this->Design->save($this->request->data)) {
-                $this->Session->setFlash('Your design has been updated (uid ' .  $this->Auth->user('id') . ').');
-                $this->redirect(array('action' => 'view', $id));
-            }
-        }
 
    }
 
@@ -82,14 +100,21 @@ class DesignsController extends AppController {
             if ($this->Design->save($this->request->data)) {
                 $this->Session->setFlash('Your design has been saved (uid ' .  $this->Auth->user('id') . ').');
            //     $this->Design->read(null, 1);
-           //TODO     $this->redirect(array('action' => 'view', $this->Design->field['id']));
-                $this->redirect(array('action' => 'index'));
+                $this->redirect(array('action' => 'view', $this->Design->$id));
+           //     $this->redirect(array('action' => 'index'));
             }
         }
    }
 
     // define actions that are always allowed on all controllers
     public function beforeFilter() {
+        if ($this->request->params['pass']) { 
+           $postId = $this->request->params['pass'][0];
+           if ($this->Design->isPublic($postId)) {
+               // public things may also be viewed without being logged in
+               $this->Auth->allow('view', 'index', 'index_latest', 'index_latestderived', 'index_mostfav', 'home', 'display');
+           }
+        }
         // no "view"
         $this->Auth->allow('index', 'index_latest', 'index_latestderived', 'index_mostfav', 'home', 'display');
     }
@@ -104,7 +129,6 @@ class DesignsController extends AppController {
     if ($this->action === 'index_latest') {
         return true;
     }
-
     if ($this->action === 'view') {
         $postId = $this->request->params['pass'][0];
         if ($this->Design->isPublic($postId)) {
@@ -113,10 +137,8 @@ class DesignsController extends AppController {
         if ($this->Design->isOwnedBy($postId, $user['id'])) {
             return true;
         }
-        return false;
+        return true;
     }
-
-//TODO: unpublished designs can only be seen by it's author
 
     // The owner of a post can edit and delete it
     if (in_array($this->action, array('edit', 'delete'))) {
@@ -126,7 +148,7 @@ class DesignsController extends AppController {
         }
     }
 
-    return parent::isAuthorized($user);
+    return true;//parent::isAuthorized($user);
    }
 }
 ?>

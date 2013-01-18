@@ -6,7 +6,9 @@ class Design extends AppModel {
        return $this->field('id', array('id' => $design, 'user_id' => $user)) === $design;
    }
    public function isPublic($design) {
-       return $this->field('id', array('id' => $design, 'public' => 1)) === $design;
+     $this->id = $design;
+     $public = $this->read('public', $design);
+     return $public['Design']['public'] == '1';   
    }
 
   // Does the storage type of this design
@@ -24,6 +26,21 @@ class Design extends AppModel {
         'files' => array('className' => 'File',
             'foreignKey' => 'design_id',
             'dependent'     => true)
+    );
+  public $hasAndBelongsToMany = array(
+        'parents' => array('className' => 'Design',
+            'joinTable'  => 'designs_designs',
+            'foreignKey' => 'child_id',
+            'associationForeignKey' => 'parent_id',
+            'dependent'     => false,
+            'unique'        => 'keepExisting')
+//,
+//        'children' => array('className' => 'Design',
+//            'joinTable'  => 'childdesigns',
+//            'foreignKey' => 'parent_id',
+//            'associationForeignKey' => 'child_id',
+//            'dependent'     => false,
+//            'unique'        => 'keepExisting')
     );
 
    public function beforeSave($options = array()){

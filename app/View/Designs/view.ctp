@@ -180,7 +180,6 @@ print_r($design);
                   echo $this->Form->create('Files', array('url' => array('controller' => 'Files', 'action' => 'delete', $file['id'])));
                   echo $this->Form->end(__('X'));
               }
-
             ?>
           </td>
         </tr>
@@ -207,11 +206,36 @@ print_r($design);
         <tr>
           <td height="150"><p>Ancestry</p>
             <p><b>Improving on:</b><br/>
-            <a href="project2.html">Project 2</a></p>
-            <a href="project2.html">Project 2</a></p>
+               <?php
+                 foreach ($design['parents'] as $parent):
+                    echo $this->Html->link($parent['title'], array('controller' => 'designs', 'action' => 'view', $parent['id']));
+                    // allow adding files if we are the owner
+                   if ($user == h($design['Design']['user_id']))  {
+                       echo $this->Form->create('Designs', array('url' => array('controller' => 'Designs', 'action' => 'deleteParent', $parent['id'])));
+                       echo $this->Form->hidden('id', array('value' =>  $design['Design']['id']));
+                       echo $this->Form->end(__('X'));
+                   }
+                    echo  "<br/>";               
+                 endforeach;
+               ?>
+            <?php
+              // allow adding parents if we are the owner
+              if ($user == h($design['Design']['user_id']))  {
+                  echo $this->Form->create('Designs', array('url' => array('controller' => 'Designs', 'action' => 'edit', $design['Design']['id'])));
+                  ?><fieldset><?php
+//                    echo $this->Form->input('Design.parents');
+                    echo $this->Form->input('parent');
+                    echo $this->Form->input('Design.id', array('type'=>'hidden', 'value'=>$design['Design']['id']));
+                   ?></fieldset><?php
+                  echo $this->Form->end(__('Add Parent'));
+              }
+            ?>
             <p><b>Improved by:</b><br/>
-            <a href="project2.html">Project 2</a></p>
-            <a href="project2.html">Project 2</a></p>
+               <?php
+                 foreach ($children as $child):
+                    echo $this->Html->link($child['designs']['title'], array('controller' => 'designs', 'action' => 'view', $child['designs']['id'])) . "<br/>";               
+                 endforeach;
+               ?>
           </td>
         </tr>
         <tr>

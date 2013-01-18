@@ -15,7 +15,7 @@
         ?> <td height="150" width="20%">
               <div align="center">
                 <?php
-  if (count($design['files']) > 0) {
+  if (count($design['images']) > 0) {
      echo '<img src="' . $design['images']['0']['image_url'] . '" height="64"/>&nbsp;';
   }
                 ?>
@@ -35,7 +35,7 @@
         ?> <td height="150" width="20%">
               <div align="center">
                 <?php
-  if (count($design['files']) > 0) {
+  if (count($design['images']) > 0) {
      echo '<img src="' . $design['images']['0']['image_url'] . '" height="64"/>&nbsp;';
   }
                 ?>
@@ -62,7 +62,7 @@
         ?> <td height="150" width="20%">
               <div align="center">
                 <?php
-  if (count($design['files']) > 0) {
+  if (count($design['images']) > 0) {
      echo '<img src="' . $design['images']['0']['image_url'] . '" height="64"/>&nbsp;';
   }
                 ?>
@@ -82,7 +82,7 @@
         ?> <td height="150" width="20%">
               <div align="center">
                 <?php
-  if (count($design['files']) > 0) {
+  if (count($design['images']) > 0) {
      echo '<img src="' . $design['images']['0']['image_url'] . '" height="64"/>&nbsp;';
   }
                 ?>
@@ -101,18 +101,42 @@
 <h1><b>Newest derived Designs</b></h1>
 <table>
   <tr>
-    <td height="150"><div align="center"><a href="project1.html">fork 1</a></div></td>
-    <td><div align="center"><a href="project2.html">fork 2</a></div></td>
-    <td><div align="center">fork 3</div></td>
-    <td><div align="center">fork 4</div></td>
-    <td><div align="center">fork 5</div></td>
+    <?php
+      for ($i = 0; $i <= 4; $i++) {
+        if (count($deriveddesigns) <= $i ) {
+        ?> <td height="150">&nbsp;</td> <?php
+        } else {
+        $design = $deriveddesigns[$i];
+        ?> <td height="150" width="20%">
+              <div align="center">
+                <?php
+  if ($design['images']['image_url']) {
+     echo '<img src="' . $design['images']['image_url'] . '" height="64"/>&nbsp;';
+  }
+                ?>
+            <?php echo $this->Html->link($design['designs']['title'], array('controller' => 'designs', 'action' => 'view', $design['designs']['id'])); ?><br/>
+              </td> <?php
+        }
+     } ?>
   </tr>
   <tr>
-    <td height="150"><div align="center">fork 6</div></td>
-    <td><div align="center">fork 7</div></td>
-    <td><div align="center">fork 8</div></td>
-    <td><div align="center">fork 9</div></td>
-    <td><div align="center">fork 10</div></td>
+    <?php
+      for ($i = 5; $i <= 9; $i++) {
+        if (count($deriveddesigns) <= $i ) {
+        ?> <td height="150">&nbsp;</td> <?php
+        } else {
+        $design = $deriveddesigns[$i];
+        ?> <td height="150" width="20%">
+              <div align="center">
+                <?php
+   if ($design['images']['image_url']) {
+     echo '<img src="' . $design['images']['image_url'] . '" height="64"/>&nbsp;';
+  }
+                ?>
+            <?php echo $this->Html->link($design['designs']['title'], array('controller' => 'designs', 'action' => 'view', $design['designs']['id'])); ?><br/>
+              </td> <?php
+        }
+     } ?>
   </tr>
 </table>
 
